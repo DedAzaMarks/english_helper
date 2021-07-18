@@ -113,7 +113,7 @@ def send_message(chat_id, text):
 def process(chat_id, message):
     res = ''
     if state == '/translate':
-        res = translate(message)
+        res = translate(message.replace('\n', ' '))
         send_message(chat_id, res)
     else:
         s = ''
@@ -142,7 +142,7 @@ def check_message(update_id, chat_id, message):
         else:
             send_message(chat_id, 'Нет такой команды')
     else:
-        data = [update_id, message, state, message, datetime.now().time()]
+        data = [update_id, state, message, datetime.now().time()]
         bot_reult = process(chat_id, message)
         data.append(bot_reult[0])
         data.append(bot_reult[1])
@@ -170,7 +170,8 @@ def run():
                 # Отвечаем тому кто прислал сообщение боту
                 chat_id = message['message']['chat']['id']
                 try:
-                    check_message(update_id, chat_id, message['message']['text'])
+                    check_message(
+                        update_id, chat_id, message['message']['text'])
 
                 except KeyError:
                     send_message(chat_id, err_message)
